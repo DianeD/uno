@@ -3,7 +3,7 @@
 In this lab, you'll use the Microsoft Graph API to create a webhooks subscription on behalf of a user, and create a public endpoint that receives change notifications. Microsoft Graph webhooks uses a poke-pull model, and sends notifications for changes to messages, events, and contacts. 
 
 ## Prerequisites
-- You must have an Office 365 tenant and Microsoft Azure subscription to complete this lab. If you don't have one, the lab for **///diff lab?/// O3651-7 Setting up your Developer environment in Office 365** shows you how to obtain a trial.
+- You must have an Office 365 tenant and Microsoft Azure subscription to complete this lab. If you don't have one, the lab for **O3651-7 Setting up your Developer environment in Office 365** shows you how to obtain a trial.
 - You must have Visual Studio 2015 with Update 1 installed.
 
 ## Exercise 1: Create a webhooks subscription and receive notifications
@@ -28,7 +28,15 @@ In this exercise, you'll create an ASP.NET MVC5 application that creates a subsc
 
 1. In the **New ASP.NET Project** dialog, uncheck **Host in the cloud**, and click **OK**.
 
-1. Open the Web.config file in the root directory of the project and copy the value for the **ida:ClientId** key. Keep the file open, we'll be adding a key in the next section.
+1. Open the Web.config file in the root directory of the project. In the **appSettings** section, insert the following code. 
+
+   ```xml
+    <add key="ida:AppKey" value="ENTER_YOUR_KEY" />
+    <add key="ida:NotificationUrl" value="ENTER_YOUR_PROXY_URL/notification/listen" />
+    <add key="ida:Resource" value="https://graph.microsoft.com/" />
+   ```
+
+1. Copy the value for the **ida:ClientId** key. Keep the file open, we'll be editing some keys later.
 
 ### Grant application permissions
 You need to grant the permissions that your app needs to get notifications. This app subscribes to Outlook email notifications, so it needs the **Mail.Read** permission scope.
@@ -63,15 +71,7 @@ You need to grant the permissions that your app needs to get notifications. This
 
 13. Make a copy of the key that was generated. You won't be able to access it after you close the browser.
 
-1. In Visual Studio, in the Web.config file, in the **appSettings** section, insert the following lines. Then replace *ENTER_YOUR_KEY* with the application key that you copied.
-
-   ```xml
-    <add key="ida:AppKey" value="ENTER_YOUR_KEY" />
-    <add key="ida:NotificationUrl" value="ENTER_YOUR_PROXY_URL/notification/listen" />
-    <add key="ida:Resource" value="https://graph.microsoft.com/" />
-   ```
-
-You'll edit the **NotificationUrl** key later.
+1. In Visual Studio, in the Web.config file, replace *ENTER_YOUR_KEY* for the **ida:AppKey** with the application key that you copied.
 
 ### Install dependencies
 1. In Visual Studio, open **Tools/Nuget Package Manager/Package Manager Console**, and run the following commands:
@@ -109,7 +109,7 @@ ngrok http <port-number> -host-header=localhost:<port-number>
 > NOTE: Keep the console open while testing. If you close it, the tunnel closes and you'll need to generate a new URL and update the sample.
 
 ### Set up authentication
-TBA
+TBA Start.Auth code
 
 ### Configure routing
 1. In the **App_Start** folder, open RouteConfig.cs and replace the Default route with the following:
@@ -125,8 +125,6 @@ routes.MapRoute(
 ### Create the subscription model
 In this step you'll create a model that represents a Subscription object. 
 
-**Create the model class**
-
 1. Right-click the **Models** folder and choose **Add/Class**. 
 
 1. Name the model **Subscription.cs** and click **Add**.
@@ -139,43 +137,132 @@ using Newtonsoft.Json;
 
 1. Replace the **Subscription** class with the following code. This also includes a view model wrapper to display in the UI.
 
-   ```c# 
-// A webhooks subscription.
-public class Subscription
-{
-    // The type of change in the subscribed resource that raises a notification.
-    [JsonProperty(PropertyName = "changeType")]
-    public string ChangeType { get; set; }
+   ```c#
+  // A webhooks subscription.
+  [Authorize]
+  public class Subscription
+  {
+      // The type of change in the subscribed resource that raises a notification.
+      [JsonProperty(PropertyName = "changeType")]
+      public string ChangeType { get; set; }
+      
+      // The string that MS Graph should send with each notification. Maximum length is 255 characters. 
+      // To verify that the notification is from MS Graph, compare the value received with the notification to the value you sent with the subscription request.
+      [JsonProperty(PropertyName = "clientState")]
+      public string ClientState { get; set; }
 
-    // The string that MS Graph should send with each notification. Maximum length is 255 characters. 
-    // To verify that the notification is from MS Graph, compare the value received with the notification to the value you sent with the subscription request.
-    [JsonProperty(PropertyName = "clientState")]
-    public string ClientState { get; set; }
+      // The URL of the endpoint that receives the subscription response and notifications. Requires https.
+      [JsonProperty(PropertyName = "notificationUrl")]
+      public string NotificationUrl { get; set; }
 
-    // The URL of the endpoint that receives the subscription response and notifications. Requires https.
-    [JsonProperty(PropertyName = "notificationUrl")]
-    public string NotificationUrl { get; set; }
+      // The resource to monitor for changes.
+      [JsonProperty(PropertyName = "resource")]
+      public string Resource { get; set; }
 
-    // The resource to monitor for changes.
-    [JsonProperty(PropertyName = "resource")]
-    public string Resource { get; set; }
+      // The date and time when the webhooks subscription expires.
+      // The time is in UTC, and can be up to three days from the time of subscription creation.
+      [JsonProperty(PropertyName = "subscriptionExpirationDateTime")]
+      public DateTimeOffset SubscriptionExpirationDateTime { get; set; }
 
-    // The date and time when the webhooks subscription expires.
-    // The time is in UTC, and can be up to three days from the time of subscription creation.
-    [JsonProperty(PropertyName = "subscriptionExpirationDateTime")]
-    public DateTimeOffset SubscriptionExpirationDateTime { get; set; }
+      // The unique identifier for the webhooks subscription.
+      [JsonProperty(PropertyName = "subscriptionId")]
+      public string SubscriptionId { get; set; }
+    }
 
-    // The unique identifier for the webhooks subscription.
-    [JsonProperty(PropertyName = "subscriptionId")]
-    public string SubscriptionId { get; set; }
-}
-
-// The data that displays in the Subscription view.
-public class SubscriptionViewModel
-{
-    public Subscription Subscription { get; set; }
-}
+    // The data that displays in the Subscription view.
+    public class SubscriptionViewModel
+    {
+        public Subscription Subscription { get; set; }
+    }
    ```
+
+### Create the index and subscription views
+In this step you'll create a view for the app start page and a view that displays the properties of the subscription you create. 
+
+**Create the index view** 
+
+1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
+1. Name the view **Index**.
+1. Replace the HTML with the following:
+
+```html
+<h2>Microsoft Graph Webhooks</h2>
+
+<div>
+    <p>You can subscribe to webhooks for specific resources (such as Outlook messages or events) to be notified about changes to the resource.</p>
+    <p>This sample creates a subscription for the <i>me/messages</i> resource for the <i>Created</i> change type. The request looks like this:</p>
+    <code>
+        {<br />
+        "resource": "me/messages",<br/>
+        "changeType": "Created",<br />
+        "notificationUrl": "https://your-notification-endpoint",<br />
+        "clientState": "your-client-state"<br />
+        }
+    </code>
+    <br />
+    <p>See the <a href="http://graph.microsoft.io/en-us/docs/api-reference/beta/resources/subscription">docs</a> for other supported resources and change types.</p>
+    @using (Html.BeginForm("CreateSubscription", "Subscription"))
+    {
+        <button type="submit">Create subscription</button>
+    }
+</div>
+```
+
+**Create the subscription view** 
+
+1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
+
+1. Name the view **Subscription**.
+
+1. Select the **Empty** template, select **SubscriptionViewModel (GraphWebhooks.Models)**, and then click **Add**.
+
+1. In the **Subscription.cshtml* file that's created, , add the following HTML:
+
+```html
+<div>
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Subscription.Resource, htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Model.Subscription.Resource
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Subscription.ChangeType, htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Model.Subscription.ChangeType
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Subscription.SubscriptionId, htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Model.Subscription.SubscriptionId
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Subscription.SubscriptionExpirationDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            </td>
+            <td>
+                @Model.Subscription.SubscriptionExpirationDateTime
+            </td>
+        </tr>
+    </table>
+</div>
+<br />
+<div>
+    @using (Html.BeginForm("LoadView", "Notification"))
+    {
+        <button type="submit">Watch for notifications</button>
+    }
+</div>
+```
 
 ### Create the subscriptions controller
 In this step you'll create a controller that will send a *POST /subscriptions* request to Microsoft Graph on behalf of the signed in user. 
@@ -209,6 +296,7 @@ All requests to Microsoft Graph require an access token.
 
 ```c#
 // Create webhooks subscriptions.
+        [Authorize]
 public async Task<ActionResult> CreateSubscription()
 {
     // Get the userObjectId and store it for future requests.
@@ -221,6 +309,24 @@ public async Task<ActionResult> CreateSubscription()
     string resourceId = ConfigurationManager.AppSettings["ida:Resource"];
     string resource = "https://graph.microsoft.com/";
     string authority = ConfigurationManager.AppSettings["ida:AADInstance"] + ConfigurationManager.AppSettings["ida:TenantId"];
+
+    HttpClient client = new HttpClient();
+    ClientCredential credential = new ClientCredential(clientId, clientSecret);
+    AuthenticationContext authContext = new AuthenticationContext(authority);
+    try
+    { 
+        AuthenticationResult authResult = authContext.AcquireTokenSilent(
+            resource,
+            credential,
+            new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    }
+    catch (Exception ex)
+    {
+        return View("Error");
+    }
 
     // Build the request.
     // Send the request and parse the response.
@@ -244,7 +350,7 @@ string message = string.Format(
 request.Content = new StringContent(message, System.Text.Encoding.UTF8, "application/json");
 ```
 
-This sample creates a subscription for the *me/messages* resource for *Created* change type. See the ///docs/// for other supported resources and change types. 
+This sample creates a subscription for the *me/messages* resource for *Created* change type. See the [docs](http://graph.microsoft.io/en-us/docs/api-reference/beta/resources/subscription) for other supported resources and change types. 
 
 **Send the request and parse the response**
 
@@ -270,16 +376,278 @@ else
 }
 ```
 
-### Create the subscription view
-In this step you'll create a view that displays the properties of the subscription you create. 
+### Create the notification and message models
+In this step you'll create models that represent Notification and Message objects. 
+
+1. Right-click the **Models** folder and choose **Add/Class**. 
+
+1. Name the model **Notification.cs** and click **Add**.
+
+1. Add the following *using* statement. The sample uses the [Json.NET](http://www.newtonsoft.com/json) framework to deserialize JSON responses.
+
+  ```c#
+using Newtonsoft.Json;
+  ```
+
+1. Replace the **Notification** class with the following code. This also defines a class for the **ResourceData** object. 
+
+  ```c# 
+    // A change notification.
+    public class Notification
+    {
+        // The type of change.
+        [JsonProperty(PropertyName = "changeType")]
+        public string ChangeType { get; set; }
+
+        // The client state used to verify that the notification is from Microsoft Graph. Compare the value received with the notification to the value you sent with the subscription request.
+        [JsonProperty(PropertyName = "clientState")]
+        public string ClientState { get; set; }
+
+        // The endpoint of the resource that changed. For example, a message uses the format ../Users/{user-id}/Messages/{message-id}
+        [JsonProperty(PropertyName = "resource")]
+        public string Resource { get; set; }
+
+        // The date and time when the webhooks subscription expires.
+        // The time is in UTC, and can be up to three days from the time of subscription creation.
+        [JsonProperty(PropertyName = "subscriptionExpirationDateTime")]
+        public string SubscriptionExpirationDateTime { get; set; }
+
+        // The unique identifier for the webhooks subscription.
+        [JsonProperty(PropertyName = "subscriptionId")]
+        public string SubscriptionId { get; set; }
+
+        // Properties of the changed resource.
+        [JsonProperty(PropertyName = "resourceData")]
+        public ResourceData ResourceData { get; set; }
+    }
+
+    public class ResourceData
+    {
+
+        // The ID of the resource.
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+
+        // The OData etag property.
+        [JsonProperty(PropertyName = "@odata.etag")]
+        public string ODataEtag { get; set; }
+
+        // The OData ID of the resource. This is the same value as the resource property.
+        [JsonProperty(PropertyName = "@odata.id")]
+        public string ODataId { get; set; }
+
+        // The OData type of the resource: "#Microsoft.Graph.Message", "#Microsoft.Graph.Event", or "#Microsoft.Graph.Contact".
+        [JsonProperty(PropertyName = "@odata.type")]
+        public string ODataType { get; set; }
+    }
+  ```
+
+1. Right-click the **Models** folder and choose **Add/Class**. 
+
+1. Name the model **Message.cs** and click **Add**.
+
+1. Add the following *using* statement.
+
+  ```c#
+using Newtonsoft.Json;
+  ```
+
+1. Replace the **Message** class with the following code. This defines some of the properties of a Message object. 
+
+  ```c# 
+    // An Outlook mail message.
+    public class Message
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+
+        [JsonProperty(PropertyName = "subject")]
+        public string Subject { get; set; }
+
+        [JsonProperty(PropertyName = "bodyPreview")]
+        public string BodyPreview { get; set; }
+
+        [JsonProperty(PropertyName = "createdDateTime")]
+        public DateTimeOffset CreatedDateTime { get; set; }
+
+        [JsonProperty(PropertyName = "isRead")]
+        public Boolean IsRead { get; set; }
+
+        [JsonProperty(PropertyName = "conversationId")]
+        public string ConversationId { get; set; }
+
+        [JsonProperty(PropertyName = "changeKey")]
+        public string ChangeKey { get; set; }
+    }
+  ```
+
+### Create the notification view
+In this step you'll create a view that displays some properties of the changed message. 
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
 
-1. Name the view **Subscription**.
+1. Name the view **Notification**.
 
-1. Select the **Empty** template, select **SubscriptionViewModel (GraphWebhooks.Models)**, and then click **Add**.
+1. Select the **Empty** template, select **Message (GraphWebhooks.Models)**, and then click **Add**.
 
-1. In the **Subscription.cshtml* file that's created, xxx
+1. In the **Notification.cshtml* file that's created, , add the following HTML:
+
+```html
+
+```
+
+### Create the notifications controller
+In this step you'll create a controller that exposes the notification endpoint. 
+
+**Create the controller class**
+
+1. Right-click the **Controllers** folder and choose **Add/Controller**. 
+
+1. Select **MVC 5 Controller - Empty** and click **Add**.
+
+1. Name the controller **NotificationController** and click **Add**.
+
+1. Add the following *using* statements:
+
+  ```c#
+using GraphWebhooks.Models;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Configuration;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+  ```
+
+**Create the notification endpoint**
+
+1. Replace the **Notification** class with the following code. This is the callback method you registered for notifications.
+
+   ```c#
+        // The notificationUrl endpoint that's registered with the webhooks subscription.
+        [Route("/notification/listen")]
+        [HttpPost]
+        public ActionResult Listen()
+        {
+
+            // Validate the new subscription by sending the token back to MS Graph.
+            // This response is required for each subscription.
+            if (Request.QueryString["validationToken"] != null)
+            {
+                var token = Request.QueryString["validationToken"];
+                return Content(token, "plain/text");
+            }
+
+            // Parse the received notifications.
+            else
+            {
+                List<Notification> notifications = new List<Notification>();
+                using (var inputStream = new System.IO.StreamReader(Request.InputStream))
+                {
+                    JObject jsonObject = JObject.Parse(inputStream.ReadToEnd());
+                    if (jsonObject != null)
+                    {
+
+                        // Notifications are sent in a 'value' array.
+                        JArray value = JArray.Parse(jsonObject["value"].ToString());
+                        foreach (var notification in value)
+                        {
+                            Notification current = JsonConvert.DeserializeObject<Notification>(notification.ToString());
+                            current.ResourceData = JsonConvert.DeserializeObject<ResourceData>(notification["resourceData"].ToString());
+
+                            // Verify the message is from Microsoft Graph. This sample only uses the current subscription.
+                            if (current.ClientState == (string)HttpRuntime.Cache.Get("clientState"))
+                            {
+                                if (current.SubscriptionId == (string)HttpRuntime.Cache.Get("subscriptionId"))
+                                {
+                                    notifications.Add(current);
+                                }
+                            }
+                        }
+                        if (notifications.Count > 0)
+                        {
+                            // Query for the changed resources. No need to await the result,
+                            GetChangedMessagesAsync(notifications);
+                        }
+                    }
+                }
+                return new HttpStatusCodeResult(200);
+            }
+        }
+   ```
+
+**Get changed messages**
+
+1. Add the **GetChangedMessagesAsync** method to the **NotificationController** class. This queries Microsoft Graph for the changed messages.
+
+```c#
+        // Get information about the changed resources.
+        public async Task<ActionResult> GetChangedMessagesAsync(List<Notification> notifications)
+        {
+            Dictionary<string, string> messages = new Dictionary<string, string>();
+            string serviceRootUrl = "https://graph.microsoft.com/v1.0/";
+
+            // Get an access token.
+            string userObjectId = (string)HttpRuntime.Cache.Get("userObjectId");
+            string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
+            string clientSecret = ConfigurationManager.AppSettings["ida:AppKey"];
+            string resourceId = ConfigurationManager.AppSettings["ida:Resource"];
+            string resource = "https://graph.microsoft.com/";
+            string authority = ConfigurationManager.AppSettings["ida:AADInstance"] + ConfigurationManager.AppSettings["ida:TenantId"];
+
+            HttpClient client = new HttpClient();
+            ClientCredential credential = new ClientCredential(clientId, clientSecret);
+            AuthenticationContext authContext = new AuthenticationContext(authority);
+
+            try
+            {
+                AuthenticationResult authResult = authContext.AcquireTokenSilent(
+                    resource,
+                    credential,
+                    new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
+            }
+
+            foreach (var notification in notifications)
+            {
+                // Send the 'GET' request.
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, serviceRootUrl + notification.Resource);
+                HttpResponseMessage response = await client.SendAsync(request);
+
+                // Parse the JSON response.
+                if (response.IsSuccessStatusCode)
+                {
+                    string stringResult = await response.Content.ReadAsStringAsync();
+                    var type = notification.ResourceData.ODataType;
+                    if (type == "#Microsoft.Graph.Message")
+                    {
+                        Message message = JsonConvert.DeserializeObject<Message>(stringResult);
+                        messages.Add(type, message.Subject);
+                    }
+                }
+                else
+                {
+                    return View("Error");
+                }
+            }
+            //NotificationService notificationService = new NotificationService();
+            //notificationService.SendNotificationToClient(resources);
+            return new EmptyResult();
+        }
+```
+
+**Update the notification view**
+
+```
+
+```
 
 
 ////////////////////
