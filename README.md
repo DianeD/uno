@@ -36,7 +36,7 @@ In this exercise, you'll create an ASP.NET MVC5 application that creates a subsc
     <add key="ida:Resource" value="https://graph.microsoft.com/" />
    ```
 
-1. Copy the value for the **ida:ClientId** key. Keep the file open, we'll be editing some keys later.
+1. Copy the value for the **ida:ClientId** key. Keep the file open, we'll be editing the keys later.
 
 ### Grant application permissions
 You need to grant the permissions that your app needs to get notifications. This app subscribes to Outlook email notifications, so it needs the **Mail.Read** permission scope.
@@ -47,7 +47,7 @@ You need to grant the permissions that your app needs to get notifications. This
 
 3. Select the directory you share with your Office 365 subscription.
 
-4. Paste the client ID that you copied into the **Search** box, and click the checkmark.
+4. Paste the client ID that you copied into the **Search** box, and click the check mark.
 
     ![](Images/04.png)
 
@@ -61,7 +61,7 @@ You need to grant the permissions that your app needs to get notifications. This
 
 9. In the **Permissions to other applications** dialog, click the **PLUS** icon next to the **Microsoft Graph** application.
 
-10. Click the checkmark icon in the lower right corner.
+10. Click the check mark icon in the lower right corner.
 
 11. For the new **Microsoft Graph** application permission entry, select the **Delegated Permissions** dropdown on the same line, and then select the **Read user mail** permission.
 
@@ -71,7 +71,7 @@ You need to grant the permissions that your app needs to get notifications. This
 
 13. Make a copy of the key that was generated. You won't be able to access it after you close the browser.
 
-1. In Visual Studio, in the Web.config file, replace *ENTER_YOUR_KEY* for the **ida:AppKey** with the application key that you copied.
+1. In Visual Studio, in the Web.config file, replace *ENTER_YOUR_KEY* for **ida:AppKey** with the application key that you copied.
 
 ### Install dependencies
 1. In Visual Studio, open **Tools/Nuget Package Manager/Package Manager Console**, and run the following commands:
@@ -82,9 +82,9 @@ Install-Package Newtonsoft.Json
    ```
 
 ### Set up the ngrok proxy
-You must have a public HTTPS endpoint to create a subscription and receive notifications from Microsoft Graph. While testing, you can use ngrok to temporarily allow messages from Microsoft Graph to tunnel to your local port. This makes it easier to test and debug webhooks. To learn more about using ngrok, see the [ngrok website](https://ngrok.com/).  
+You must expose a public HTTPS endpoint to create a subscription and receive notifications from Microsoft Graph. While testing, you can use ngrok to temporarily allow messages from Microsoft Graph to tunnel to your local port. This makes it easier to test and debug webhooks. To learn more about using ngrok, see the [ngrok website](https://ngrok.com/).  
 
-You'll use the HTTPS Forwarding URL that ngrok provides in your endpoint. To configure the proxy, you need the HTTP port number for your project.
+To configure the proxy, you need the HTTP port number for your project.
 
 1. In Visual Studio, in Solution Explorer, select the **GraphWebhooks** project.
 
@@ -94,7 +94,7 @@ You'll use the HTTPS Forwarding URL that ngrok provides in your endpoint. To con
 
 1. Unzip the package and run ngrok.exe.  
 
-1. Replace the two *<port-number>* placeholder values in the following command with your actual port number, and run it in the ngrok console.
+1. Replace the two *<port-number>* placeholder values in the following command with your actual port number, and then run it in the ngrok console.
 
    ```
 ngrok http <port-number> -host-header=localhost:<port-number>
@@ -104,7 +104,7 @@ ngrok http <port-number> -host-header=localhost:<port-number>
 
 	![](Images/ngrok.png)
 
-1. In Visual Studio, open Web.config and replace *ENTER_YOUR_PROXY_URL* with the HTTPS URL you copied. The **ida:NotificationUrl** key will look something like this: `https://21698db0.ngrok.io/notification/listen`
+1. In Visual Studio, open Web.config and replace *ENTER_YOUR_PROXY_URL* with the HTTPS URL you copied. Your **ida:NotificationUrl** key will look something like this: `https://21698db0.ngrok.io/notification/listen`
    
 > NOTE: Keep the console open while testing. If you close it, the tunnel closes and you'll need to generate a new URL and update the sample.
 
@@ -123,7 +123,7 @@ routes.MapRoute(
    ```
 
 ### Create the subscription model
-In this step you'll create a model that represents a Subscription object. 
+In this step, you'll create a model that represents a Subscription object. 
 
 1. Right-click the **Models** folder and choose **Add/Class**. 
 
@@ -135,7 +135,7 @@ In this step you'll create a model that represents a Subscription object.
 using Newtonsoft.Json;
    ```
 
-1. Replace the **Subscription** class with the following code. This also includes a view model wrapper to display in the UI.
+1. Replace the **Subscription** class with the following code. This code also includes a view model to display subscription properties in the UI.
 
    ```c#
   // A webhooks subscription.
@@ -182,14 +182,16 @@ In this step you'll create a view for the app start page and a view that display
 **Create the index view** 
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
+
 1. Name the view **Index**.
-1. Replace the HTML with the following:
+
+1. In the **Subscription.cshtml** file that's created, replace the HTML with the following code:
 
 ```html
 <h2>Microsoft Graph Webhooks</h2>
 
 <div>
-    <p>You can subscribe to webhooks for specific resources (such as Outlook messages or events) to be notified about changes to the resource.</p>
+    <p>You can subscribe to webhooks for specific resources (such as Outlook messages or events) to get notifications about changes to the resource.</p>
     <p>This sample creates a subscription for the <i>me/messages</i> resource for the <i>Created</i> change type. The request looks like this:</p>
     <code>
         {<br />
@@ -216,7 +218,7 @@ In this step you'll create a view for the app start page and a view that display
 
 1. Select the **Empty** template, select **SubscriptionViewModel (GraphWebhooks.Models)**, and then click **Add**.
 
-1. In the **Subscription.cshtml* file that's created, , add the following HTML:
+1. In the **Subscription.cshtml** file, add the following code:
 
 ```html
 <div>
@@ -307,7 +309,6 @@ public async Task<ActionResult> CreateSubscription()
     string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
     string clientSecret = ConfigurationManager.AppSettings["ida:AppKey"];
     string resourceId = ConfigurationManager.AppSettings["ida:Resource"];
-    string resource = "https://graph.microsoft.com/";
     string authority = ConfigurationManager.AppSettings["ida:AADInstance"] + ConfigurationManager.AppSettings["ida:TenantId"];
 
     HttpClient client = new HttpClient();
@@ -316,7 +317,7 @@ public async Task<ActionResult> CreateSubscription()
     try
     { 
         AuthenticationResult authResult = authContext.AcquireTokenSilent(
-            resource,
+            resourceId,
             credential,
             new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
 
@@ -368,6 +369,9 @@ if (response.IsSuccessStatusCode)
     {
         Subscription = JsonConvert.DeserializeObject<Subscription>(stringResult)
     };
+    // This app temporarily stores the current subscription ID and client state. Production apps typically use some method of persistent storage.
+    HttpRuntime.Cache.Insert("subscriptionId", viewModel.Subscription.SubscriptionId, null, DateTime.MaxValue, new TimeSpan(24, 0, 0), System.Web.Caching.CacheItemPriority.NotRemovable, null);
+    HttpRuntime.Cache.Insert("clientState", viewModel.Subscription.ClientState, null, DateTime.MaxValue, new TimeSpan(24, 0, 0), System.Web.Caching.CacheItemPriority.NotRemovable, null);
     return View("Subscription", viewModel);
 }
 else
@@ -490,10 +494,39 @@ In this step you'll create a view that displays some properties of the changed m
 
 1. Select the **Empty** template, select **Message (GraphWebhooks.Models)**, and then click **Add**.
 
-1. In the **Notification.cshtml* file that's created, , add the following HTML:
+1. In the **Notification.cshtml* file that's created, replace the HTML with the following code:
 
 ```html
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.signalR-2.2.0.min.js");
+    @Scripts.Render("~/signalr/hubs");
 
+    <script>
+        var connection = $.hubConnection();
+        var hub = connection.createHubProxy("NotificationHub");
+        hub.on("showNotification", function (resources) {
+            $.each (resources, function(index, value) {          // Iterate through resource collection
+                var resource = value;                            // Get current resource
+
+                var table = $("<table></table>");
+                var header = $("<th>Resource " + ("") + "</th>").appendTo(table);
+
+                var row = $("<tr></tr>");
+                $("<td></td>").text("").appendTo(row);
+                $("<td></td>").text("").appendTo(row);
+                table.append(row);
+            });
+                $("#notification").append(table);
+                $("#notification").append("<br />");
+        });
+
+        connection.start();
+    </script>
+}
+<h2>Notifications</h2>
+<p>You should get a notification when your user sends or receives an email.</p>
+<br />
+<div id="notification"></div>
 ```
 
 ### Create the notifications controller
@@ -593,7 +626,6 @@ using System.Threading.Tasks;
             string clientId = ConfigurationManager.AppSettings["ida:ClientId"];
             string clientSecret = ConfigurationManager.AppSettings["ida:AppKey"];
             string resourceId = ConfigurationManager.AppSettings["ida:Resource"];
-            string resource = "https://graph.microsoft.com/";
             string authority = ConfigurationManager.AppSettings["ida:AADInstance"] + ConfigurationManager.AppSettings["ida:TenantId"];
 
             HttpClient client = new HttpClient();
@@ -603,7 +635,7 @@ using System.Threading.Tasks;
             try
             {
                 AuthenticationResult authResult = authContext.AcquireTokenSilent(
-                    resource,
+                    resourceId,
                     credential,
                     new UserIdentifier(userObjectId, UserIdentifierType.UniqueId));
 
@@ -646,45 +678,14 @@ using System.Threading.Tasks;
 **Update the notification view**
 
 ```
-
+TODO: add service components and code
 ```
 
 
-////////////////////
-### Check Authentication Flow
-At this point you can test the default authentication flow for your application.
 
-  1. In Visual Studio, press **F5**. The browser will automatically launch taking you to the HTTPS start page for the web application.
+Troubleshooting 
 
-   > **Note:** If you receive an error that indicates ASP.NET could not connect to the SQL database, please see the [SQL Server Database Connection Error Resolution document](../../SQL-DB-Connection-Error-Resolution.md) to quickly resolve the issue. 
-
-  1. To sign in, click the **Sign In** link in the upper-right corner.
-
-  1. Login using your **Organizational Account**.
-
-  1. Upon a successful login, since this will be the first time you have logged into this app, Azure AD will present you with the common consent dialog that looks similar to the following image:
-
-    ![](Images/ConsentDialog.png)
-
-  1. Click **Accept** to approve the app's permission request on your data in Office 365.
-
-  1. You will then be redirected back to your web application. However notice in the upper right corner, it now shows your email address & the **Sign Out** link.
- 
-  1. In Visual Studio, press **Shift+F5** to stop debugging.
-
-Congratulations... your app is configured with Azure AD and leverages OpenID Connect and OWIN to facilitate the authentication process!
-
-
-### Add Navigation
-In this step you will create a link on home page to navigate to notebooks list page
-
-1. Locate the **Views/Shared** folder in the project.
-1. Open the **_Layout.cshtml** file found in the **Views/Shared** folder.
-
-Congratulations! You have created an ASP.NET MVC application that uses the Microsoft Graph to get notifications when the user creates a new message in Outlook.
-
-
-
+[assembly: OwinStartupAttribute(typeof(GraphWebhooks.Startup))]
 
 
 
