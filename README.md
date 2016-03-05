@@ -100,14 +100,12 @@ TBA
 routes.MapRoute(
     name: "Default",
     url: "{controller}/{action}",
-    defaults: new { controller = "Subscription", action = "CreateSubscription" }
+    defaults: new { controller = "Subscription", action = "Index" }
 );
 ```
 
 ### Create the subscription model
 In this step you'll create a model that represents a Subscription object. 
-
-**Create the model class**
 
 1. Right-click the **Models** folder and choose **Add/Class**. 
 1. Name the model **Subscription.cs** and click **Add**.
@@ -182,7 +180,7 @@ using System.Threading.Tasks;
 
 All requests to Microsoft Graph require an access token.
 
-1. Replace the **Index** method with the following method. This gets an access token by calling the **AcquireTokenSilent** method, and then adds the token to the HTTP client that we'll use for the *POST /subscriptions* request.
+1. Add the following method. This gets an access token by calling the **AcquireTokenSilent** method, and then adds the token to the HTTP client that we'll use for the *POST /subscriptions* request.
 
 ```c#
 // Create webhooks subscriptions.
@@ -247,10 +245,219 @@ else
 }
 ```
 
-### Create the subscription view
-In this step you'll create a view that displays the properties of the subscription you create. 
+### Create the index and subscription views
+In this step you'll create a view for the app start page and a view that displays the properties of the subscription you create. 
+
+**Create the index view** 
+
+1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
+1. Name the view **Index**.
+1. Replace the HTML with the following:
+
+```html
+<h2>Microsoft Graph Webhooks</h2>
+
+<div>
+    <p>You can subscribe to webhooks for specific resources (such as Outlook messages or events) to be notified about changes to the resource.</p>
+    <p>This sample creates a subscription for the <i>me/messages</i> resource for the <i>Created</i> change type. The request looks like this:</p>
+    <code>
+        {<br />
+        "resource": "me/messages",<br/>
+        "changeType": "Created",<br />
+        "notificationUrl": "https://your-notification-endpoint",<br />
+        "clientState": "your-client-state"<br />
+        }
+    </code>
+    <br />
+    <p>See the ///docs/// for other supported resources and change types.</p>
+    @using (Html.BeginForm("CreateSubscription", "Subscription"))
+    {
+        <button type="submit">Create subscription</button>
+    }
+</div>
+```
+
+**Create the subscription view** 
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
 1. Name the view **Subscription**.
 1. Select the **Empty** template, select **SubscriptionViewModel (GraphWebhooks.Models)**, and then click **Add**.
-1. In the **Subscription.cshtml* file that's created, 
+1. In the **Subscription.cshtml* file that's created, add the following HTML:
+
+```html
+<div>
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.Subscription.Resource, htmlAttributes: new { @class = "control-label col-md-2" })
+                <br />
+                @Html.TextAreaFor(m => m.Subscription.Resource, 16, 60, new { @class = "form-control" })
+            </td>
+            <td>
+                @Html.LabelFor(m => m.Subscription.ChangeType, htmlAttributes: new { @class = "control-label col-md-2" })
+                <br />
+                @Html.TextAreaFor(m => m.Subscription.ChangeType, 16, 60, new { @class = "form-control" })
+            </td>
+            <td>
+                @Html.LabelFor(m => m.Subscription.SubscriptionId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <br />
+                @Html.TextAreaFor(m => m.Subscription.SubscriptionId, 16, 60, new { @class = "form-control" })
+            </td>
+            <td>
+                @Html.LabelFor(m => m.Subscription.SubscriptionExpirationDateTime, htmlAttributes: new { @class = "control-label col-md-2" })
+                <br />
+                @Html.TextAreaFor(m => m.Subscription.SubscriptionExpirationDateTime, 16, 60, new { @class = "form-control" })
+            </td>
+        </tr>
+    </table>
+</div>
+<br />
+<div>
+    @using (Html.BeginForm("LoadView", "Notification"))
+    {
+        <button type="submit">Watch for notifications</button>
+    }
+</div>
+```
+
+### Create the notification model
+In this step you'll create a model that represents a Notification object. 
+
+1. Right-click the **Models** folder and choose **Add/Class**. 
+1. Name the model **Notification.cs** and click **Add**.
+1. Add the following *using* statement. The samples uses the [Json.NET](http://www.newtonsoft.com/json) framework to deserialize JSON responses.
+
+```c#
+using Newtonsoft.Json;
+```
+
+1. Replace the **Notification** class with the following code. This also defines a class for the **ResourceData** object. 
+
+```c# 
+    // A change notification.
+    public class Notification
+    {
+        // The type of change.
+        [JsonProperty(PropertyName = "changeType")]
+        public string ChangeType { get; set; }
+
+        // The client state used to verify that the notification is from Microsoft Graph. Compare the value received with the notification to the value you sent with the subscription request.
+        [JsonProperty(PropertyName = "clientState")]
+        public string ClientState { get; set; }
+
+        // The endpoint of the resource that changed. For example, a message uses the format ../Users/{user-id}/Messages/{message-id}
+        [JsonProperty(PropertyName = "resource")]
+        public string Resource { get; set; }
+
+        // The date and time when the webhooks subscription expires.
+        // The time is in UTC, and can be up to three days from the time of subscription creation.
+        [JsonProperty(PropertyName = "subscriptionExpirationDateTime")]
+        public string SubscriptionExpirationDateTime { get; set; }
+
+        // The unique identifier for the webhooks subscription.
+        [JsonProperty(PropertyName = "subscriptionId")]
+        public string SubscriptionId { get; set; }
+
+        // Properties of the changed resource.
+        [JsonProperty(PropertyName = "resourceData")]
+        public ResourceData ResourceData { get; set; }
+    }
+
+    public class ResourceData
+    {
+
+        // The ID of the resource.
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+
+        // The OData etag property.
+        [JsonProperty(PropertyName = "@odata.etag")]
+        public string ODataEtag { get; set; }
+
+        // The OData ID of the resource. This is the same value as the resource property.
+        [JsonProperty(PropertyName = "@odata.id")]
+        public string ODataId { get; set; }
+
+        // The OData type of the resource: "#Microsoft.Graph.Message", "#Microsoft.Graph.Event", or "#Microsoft.Graph.Contact".
+        [JsonProperty(PropertyName = "@odata.type")]
+        public string ODataType { get; set; }
+    }
+```
+
+### Create the notifications controller
+In this step you'll create a controller that exposes the notification endpoint. 
+
+**Create the controller class**
+
+1. Right-click the **Controllers** folder and choose **Add/Controller**. 
+1. Select **MVC 5 Controller - Empty** and click **Add**.
+1. Name the controller **NotificationController** and click **Add**.
+1. Add the following *using* statements:
+
+```c#
+using GraphWebhooks.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+```
+
+**Create the notification endpoint**
+
+1. Replace the **Notification** class with the following code.
+
+```c#
+public class NotificationController : Controller
+{
+    // The notificationUrl endpoint that's registered with the webhooks subscription.
+    [Route("/notification/listen")]
+    [HttpPost]
+    public ActionResult Listen()
+    {
+
+        // Validate the new subscription by sending the token back to Microsoft Graph.
+        // This response is required for each subscription.
+        if (Request.QueryString["validationToken"] != null)
+        {
+            var token = Request.QueryString["validationToken"];
+            return Content(token, "plain/text");
+        }
+
+        // Parse the received notifications.
+        else
+        {
+            List<Notification> notifications = new List<Notification>();
+            using (var inputStream = new System.IO.StreamReader(Request.InputStream))
+            {
+                JObject jsonObject = JObject.Parse(inputStream.ReadToEnd());
+                if (jsonObject != null)
+                {
+
+                    // Notifications are sent in a 'value' array.
+                    JArray value = JArray.Parse(jsonObject["value"].ToString());
+                    foreach (var notification in value)
+                    {
+                        Notification current = JsonConvert.DeserializeObject<Notification>(notification.ToString());
+                        current.ResourceData = JsonConvert.DeserializeObject<ResourceData>(notification["resourceData"].ToString());
+
+                        // Verify the message is from Microsoft Graph. This sample only uses the current subscription.
+                        if (current.ClientState == (string)HttpRuntime.Cache.Get("clientState                            {
+                            if (current.SubscriptionId == (string)HttpRuntime.Cache.Get("subscriptionId"))
+                            {
+                                notifications.Add(current);
+                            }
+                        }
+                        else
+                        {
+                            // 
+                            return new HttpStatusCodeResult(200);
+                        }
+                    }
+
+                    // Query for the changed resources. No need to await the result, so continue and respond to Microsoft Graph.
+                    //ChangedResourceAsync(notifications);
+                }
+            }
+            return new HttpStatusCodeResult(200);
+        }
+    }
+}
+```
