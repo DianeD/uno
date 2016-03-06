@@ -1,15 +1,16 @@
-# Microsoft Graph Webhooks #
+# Microsoft Graph Webhooks
 
-In this lab, you'll use the Microsoft Graph API to create a webhooks subscription on behalf of a user, and create a public endpoint that receives change notifications. Microsoft Graph webhooks uses a poke-pull model, and sends notifications for changes to messages, events, and contacts. 
+## Overview 
+A webhooks subscription allows a client app to receive notifications about mail, events, and contacts from the Microsoft Graph. Microsoft Graph implements a poke-pull model: it sends notifications when changes are made to messages, events, or contacts, and then you query the Microsoft Graph for the details you need. 
 
-## Prerequisites
-- You must have an Office 365 tenant and Microsoft Azure subscription to complete this lab. If you don't have one, the lab for **O3651-7 Setting up your Developer environment in Office 365** shows you how to obtain a trial.
-- You must have Visual Studio 2015 with Update 1 installed.
+## What You’ll Learn
+In this lab, you'll create an ASP.NET MVC5 application that subscribes for Microsoft Graph webhooks and receives change notifications. You'll use the Microsoft Graph API to create a subscription, and create a public endpoint that receives change notifications. 
 
-## Exercise 1: Create a webhooks subscription and receive notifications
-In this exercise, you'll create an ASP.NET MVC5 application that creates a subscription for Microsoft Graph webhooks and receives change notifications.
+## Tools You’ll Use
+- Visual Studio 2015 with Update 1
+- An Office 365 tenant and Microsoft Azure subscription. If you don't have these, the lab for **O3651-7 Setting up your Developer environment in Office 365** shows you how to obtain a trial.
 
-### Create an ASP.NET MVC5 application
+## Step 1: Create an ASP.NET MVC5 application
 1. Launch **Visual Studio 2015** as an administrator. 
 
 1. In Visual Studio select **File/New/Project**. 
@@ -38,7 +39,7 @@ In this exercise, you'll create an ASP.NET MVC5 application that creates a subsc
 
 1. Copy the value for the **ida:ClientId** key. Keep the file open, we'll be editing the keys later.
 
-### Grant application permissions
+## Step 2: Grant application permissions
 This app needs the **Mail.Read** permission scope to receive notifications about changes to Outlook email.
 
 1. Browse to the [Azure Management Portal](https://manage.windowsazure.com) and sign in with the account that lets you manage your Office 365 directory.
@@ -73,7 +74,7 @@ This app needs the **Mail.Read** permission scope to receive notifications about
 
 1. In Visual Studio, in the Web.config file, replace *ENTER_YOUR_KEY* for **ida:AppKey** with the application key that you copied.
 
-### Install dependencies
+## Step 3: Install dependencies
 1. In Visual Studio, open **Tools/Nuget Package Manager/Package Manager Console**, and run the following commands:
 
    ```
@@ -82,7 +83,7 @@ Install-Package Newtonsoft.Json
 Install-Package Microsoft.AspNet.SignalR
    ```
 
-### Set up the ngrok proxy
+## Step 4: Set up the ngrok proxy
 You must expose a public HTTPS endpoint to create a subscription and receive notifications from Microsoft Graph. While testing, you can use ngrok to temporarily allow messages from Microsoft Graph to tunnel to your local port. This makes it easier to test and debug webhooks. To learn more about using ngrok, see the [ngrok website](https://ngrok.com/).  
 
 To configure the proxy, you need the HTTP port number for your project.
@@ -109,10 +110,10 @@ ngrok http <port-number> -host-header=localhost:<port-number>
    
    > NOTE: Keep the console open while testing. If you close it, the tunnel also closes and you'll need to generate a new URL and update the sample.
 
-### Set up authentication
+## Step 5: Set up authentication
 TBA Start.Auth code
 
-### Configure routing
+## Step 6: Configure routing
 1. In the **App_Start** folder, open RouteConfig.cs and replace the Default route with the following:
 
    ```c#
@@ -123,7 +124,7 @@ routes.MapRoute(
 );
    ```
 
-### Create the Subscription model
+## Step 7: Create the Subscription model
 In this step, you'll create a model that represents a Subscription object. 
 
 1. Right-click the **Models** folder and choose **Add/Class**. 
@@ -177,10 +178,10 @@ using Newtonsoft.Json;
     }
    ```
 
-### Create the Index and Subscription views
+## Step 8: Create the Index and Subscription views
 In this step you'll create a view for the app start page and a view that displays the properties of the subscription you create. 
 
-**Create the Index view** 
+### Create the Index view
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
 
@@ -211,7 +212,7 @@ In this step you'll create a view for the app start page and a view that display
 </div>
    ```
 
-**Create the Subscription view** 
+### Create the Subscription view
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
 
@@ -267,10 +268,10 @@ In this step you'll create a view for the app start page and a view that display
 </div>
    ```
 
-### Create the Subscription controller
+## Step 9: Create the Subscription controller
 In this step you'll create a controller that will send a **POST /subscriptions** request to Microsoft Graph on behalf of the signed in user. 
 
-**Create the controller class**
+### Create the controller class
 
 1. Right-click the **Controllers** folder and choose **Add/Controller**. 
 
@@ -291,7 +292,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
    ```
 
-**Get an access token**
+### Get an access token
 
 All requests to Microsoft Graph require an access token.
 
@@ -335,7 +336,7 @@ public async Task<ActionResult> CreateSubscription()
 }
    ```
 
-**Build the POST /subscriptions request**
+### Build the POST /subscriptions request
 
 1. Replace the *// Build the request* comment with the following code, which builds the **POST /subscriptions** request. This example uses a random GUID for the client state.
 
@@ -382,10 +383,10 @@ else
 }
    ```
 
-### Create the Notification and Message models
+## Step 10: Create the Notification and Message models
 In this step, you'll create models that represent Notification and Message objects. 
 
-**Create the Notification model**
+### Create the Notification model
 
 1. Right-click the **Models** folder and choose **Add/Class**. 
 
@@ -450,7 +451,7 @@ using Newtonsoft.Json;
     }
   ```
 
-**Create the Message model**
+### Create the Message model
 
 1. Right-click the **Models** folder and choose **Add/Class**. 
 
@@ -491,7 +492,7 @@ using Newtonsoft.Json;
     }
   ```
 
-### Create the Notification view
+## Step 11: Create the Notification view
 In this step you'll create a view that displays some properties of the changed message. 
 
 1. Right-click the **Views/Subscription** folder and choose **Add/View**. 
@@ -543,10 +544,10 @@ In this step you'll create a view that displays some properties of the changed m
 <div id="message"></div>
    ```
 
-### Create the Notification controller
+## Step 12: Create the Notification controller
 In this step you'll create a controller that exposes the notification endpoint. 
 
-**Create the controller class**
+### Create the controller class
 
 1. Right-click the **Controllers** folder and choose **Add/Controller**. 
 
@@ -568,7 +569,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
   ```
 
-**Create the notification endpoint**
+### Create the notification endpoint
 
 1. Replace the **Notification** class with the following code. This is the callback method you registered for notifications.
 
@@ -625,7 +626,7 @@ using System.Threading.Tasks;
         }
    ```
 
-**Get changed messages**
+### Get changed messages
 
 1. Add the **GetChangedMessagesAsync** method to the **NotificationController** class. This queries Microsoft Graph for the changed messages.
 
@@ -690,9 +691,9 @@ using System.Threading.Tasks;
         }
    ```
 
-**Send data to the Notification view**
 
-This app uses SignalR to send updates to the Notification page.
+## Step 13: Set up SignalR
+This app uses SignalR to send updates to the Notification view.
 
 1. Right-click the **GraphWebhooks** project and create a folder named **SignalR**.
 
@@ -710,8 +711,25 @@ using GraphWebhooks.Models;
 using GraphWebhooks.Models;
    ```
 
+1. Open **Startup.cs** in the root directory of the project, and edit the class as follows:
 
-
+   ```
+[assembly: OwinStartup(typeof(GraphWebhooks.Startup))]
+namespace GraphWebhooks
+{
+    public partial class Startup
+    {
+        public void Configuration(IAppBuilder app)
+        {
+            ConfigureAuth(app);
+			app.MapSignalR();
+        }
+    }
+}
+   ```
+## Next Steps and Additional Resources:  
+- See this training and more on http://dev.office.com/
+- Learn about and connect to the Microsoft Graph at https://graph.microsoft.io
 
 
 
