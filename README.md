@@ -111,7 +111,7 @@ ngrok http <port-number> -host-header=localhost:<port-number>
    > NOTE: Keep the console open while testing. If you close it, the tunnel also closes and you'll need to generate a new URL and update the sample.
 
 ## Step 5: Set up authentication
-TBA Start.Auth code
+TBA Start.Auth and auth helper? TokenCache?
 
 ## Step 6: Configure routing
 1. In the **App_Start** folder, open RouteConfig.cs and replace the Default route with the following:
@@ -179,7 +179,7 @@ using Newtonsoft.Json;
    ```
 
 ## Step 8: Create the Index and Subscription views
-In this step you'll create a view for the app start page and a view that displays the properties of the subscription you create. 
+In this step, you'll create a view for the app start page and a view that displays the properties of the subscription you create. You'll also edit the Error view to show a description.
 
 ### Create the Index view
 
@@ -194,7 +194,7 @@ In this step you'll create a view for the app start page and a view that display
 
 <div>
     <p>You can subscribe to webhooks for specific resources (such as Outlook messages or events) to get notifications about changes to the resource.</p>
-    <p>This sample creates a subscription for the <i>me/messages</i> resource for the <i>Created</i> change type. The request looks like this:</p>
+    <p>This sample creates a subscription for the <i>me/messages</i> resource and the <i>Created</i> change type. The request body looks like this:</p>
     <code>
         {<br />
         &nbsp;&nbsp;"resource": "me/messages",<br/>
@@ -268,6 +268,14 @@ In this step you'll create a view for the app start page and a view that display
 </div>
    ```
 
+### Edit the Error view
+
+1. Open **Views/Shared/Error.cshtml** and add the following line at the bottom of the file:
+
+   ```html
+<p>@ViewData["description"]</p>
+   ```
+
 ## Step 9: Create the Subscription controller
 In this step you'll create a controller that will send a **POST /subscriptions** request to Microsoft Graph on behalf of the signed in user. 
 
@@ -328,6 +336,7 @@ public async Task<ActionResult> CreateSubscription()
     }
     catch (Exception ex)
     {
+        ViewData["description"] = ex.Message;
         return View("Error");
     }
 
@@ -355,7 +364,7 @@ request.Content = new StringContent(message, System.Text.Encoding.UTF8, "applica
 
 This sample creates a subscription for the *me/messages* resource for *Created* change type. See the [docs](http://graph.microsoft.io/en-us/docs/api-reference/beta/resources/subscription) for other supported resources and change types. 
 
-**Send the request and parse the response**
+### Send the request and parse the response
 
 1. Replace the *// Send the request and parse the response* comment with the following code. This sends the request, parses the response, and loads the view.
 
@@ -379,6 +388,7 @@ if (response.IsSuccessStatusCode)
 }
 else
 {
+    ViewData["description"] = response.ReasonPhrase;
     return View("Error");
 }
    ```
@@ -463,7 +473,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json;
   ```
 
-1. Replace the **Message** class with the following code. This defines some of the properties of a Message object. 
+1. Replace the **Message** class with the following code. This defines the properties of a Message object that we'll display in the Notification view. 
 
   ```c# 
     // An Outlook mail message.
@@ -530,16 +540,15 @@ In this step you'll create a view that displays some properties of the changed m
                     $("<td></td>").text(property).appendTo(row);
                     table.append(row);
                 }
+                $("#message").append(table);
+                $("#message").append("<br />");
             });
-            $("#message").append(table);
-            $("#message").append("<br />");
         });
-
         connection.start();
     </script>
 }
 <h2>Messages</h2>
-<p>You will get a notification when your user sends or receives an email. The changed messages display below.</p>
+<p>You'll get a notification when your user sends or receives an email. The changed messages display below.</p>
 <br />
 <div id="message"></div>
    ```
@@ -693,25 +702,34 @@ using System.Threading.Tasks;
 
 
 ## Step 13: Set up SignalR
-This app uses SignalR to send updates to the Notification view.
+This app uses SignalR to notify the client to refresh its view.
 
 1. Right-click the **GraphWebhooks** project and create a folder named **SignalR**.
 
-1. Right-click the **SignalR** folder and add **SignalR Hub Class (v2)**.
+1. Right-click the **SignalR** folder and add **SignalR Hub Class (v2)**. This sample doesn't add any functionality to the hub.
 
-TODO
+1. Right-click the **SignalR** folder and add a **SignalR Persistent Connection Class (v2)** named **NotificationService.cs**.
 
-   ```c#
-using GraphWebhooks.Models;
-   ```
-
-1. Right-click the **SignalR** folder and add **SignalR Persistent Connection Class (v2)**.
+1. Add the following **using** statement:
 
    ```c#
 using GraphWebhooks.Models;
    ```
 
-1. Open **Startup.cs** in the root directory of the project, and edit the class as follows:
+1. Add the following method to the **NotificationService** class. This broadcasts the change to the client.
+
+   ```c#
+        public void SendNotificationToClient(List<Message> messages)
+        {
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
+            if (hubContext != null)
+            {
+                hubContext.Clients.All.showNotification(messages);
+            }
+        }
+   ```
+
+1. Open **Startup.cs** in the root directory of the project, and edit the class as follows. 
 
    ```
 [assembly: OwinStartup(typeof(GraphWebhooks.Startup))]
@@ -722,11 +740,12 @@ namespace GraphWebhooks
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-			app.MapSignalR();
+			 app.MapSignalR();
         }
     }
 }
    ```
+
 ## Next Steps and Additional Resources:  
 - See this training and more on http://dev.office.com/
 - Learn about and connect to the Microsoft Graph at https://graph.microsoft.io
