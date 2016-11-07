@@ -1,11 +1,12 @@
 ---
-ms.Toctitle: Get content and structure
-title: Get OneNote content and structure 
-description: Get OneNote entities, hierarchy, and page and file content. Use OData query string options to filter your queries.
+ms.TocTitle: Get content and structure
+Title: Get OneNote content and structure 
+Description: Get OneNote entities, hierarchy, and page and file content. Use OData query string options to filter your queries.
 ms.ContentId: f3e2d1e6-0c62-4c22-bd8b-4dd378356502
+ms.topic: article (how-tos)
 ms.date: May 24, 2016
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -20,6 +21,7 @@ To get OneNote content and structure, you send a GET request to the target endpo
 If the request is successful, the OneNote API returns a 200 HTTP status code and the entities or content that you requested. OneNote entities are returned as JSON objects that conform to the OData version 4.0 specification.
 
 By using query string options, you can filter your queries and improve performance.
+
 
 <a name="request-uri"></a>
 ## Construct the request URI
@@ -96,7 +98,15 @@ Use **pagelevel** to return the indentation level of the page and its order with
 The JSON response contains the preview content, which you can use to help users identify what's in the page.
 
 ```json
-{  "@odata.context":"https://www.onenote.com/api/v1.0/$metadata#Microsoft.OneNote.Api.PagePreview",  "previewText":"text-snippet",  "links":{    "previewImageUrl":{      "href":"https://www.onenote.com/api/v1.0/resources/{id}/content?publicAuth=true&mimeType=image/png"    }  }}
+{
+  "@odata.context":"https://www.onenote.com/api/v1.0/$metadata#Microsoft.OneNote.Api.PagePreview",
+  "previewText":"text-snippet",
+  "links":{
+    "previewImageUrl":{
+      "href":"https://www.onenote.com/api/v1.0/resources/{id}/content?publicAuth=true&mimeType=image/png"
+    }
+  }
+}
 ```
 
 The **previewText** property contains a text snippet from the page. The OneNote API returns complete phrases, up to a maximum of 300 characters. 

@@ -1,11 +1,12 @@
 ---
-ms.Toctitle: Create pages
-title: Create OneNote pages
-description: Create OneNote pages in any section, and include images, files, and other content.
+ms.TocTitle: Create pages
+Title: Create OneNote pages
+Description: Create OneNote pages in any section, and include images, files, and other content.
 ms.ContentId: 0de322cc-570f-4afb-a313-b1d9c3d916f2
+ms.topic: article (how-tos)
 ms.date: May 17, 2016
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -18,6 +19,14 @@ To create a OneNote page, you send a POST request to a *pages* endpoint. For exa
 <p id="indent">`POST ../notes/sections/{id}/pages`</p>
 
 Send the HTML that defines the page in the message body. If the request is successful, the OneNote API returns a 201 HTTP status code.
+
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Construct the request URI](#request-uri)</p>
+<p id="indent">[Construct the message body](#message-body)</p>
+<p id="indent">[Example request](#example)</p>
+<p id="indent">[Request and response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
 
 >To learn about the POST requests you can send to create sections, section groups, and notebooks, see our [interactive REST reference](http://dev.onenote.com/docs).
 

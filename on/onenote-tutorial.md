@@ -1,6 +1,6 @@
-﻿---
+---
 ms.Toctitle: Quick Start tutorial
-title: "Tutorial: Create a OneNote app" 
+title: "Tutorial - Create a OneNote app" 
 description: Create your first OneNote app.
 ms.ContentId: 513111e6-35e9-4d7d-b986-4ca2fa33b6cb
 ms.date: January 12, 2016
@@ -1266,6 +1266,3 @@ There's a OneNoteSample project in the SDK that uses Live Connect authentication
 - [OneNote Developer Blog](http://go.microsoft.com/fwlink/?LinkID=390183)
 - [OneNote development questions on Stack Overflow](http://go.microsoft.com/fwlink/?LinkID=390182) 
 - [OneNote GitHub repos](http://go.microsoft.com/fwlink/?LinkID=390178)  
-
-
-

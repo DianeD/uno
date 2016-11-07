@@ -1,8 +1,9 @@
 ---
-ms.Toctitle: Copy notebooks, sections, and pages
-title: Copy notebooks, sections, and pages 
-description: Use the OneNote API to copy notebooks, sections, and pages.
+ms.TocTitle: Copy notebooks, sections, and pages
+Title: Copy notebooks, sections, and pages 
+Description: Use the OneNote API to copy notebooks, sections, and pages.
 ms.ContentId: b21fe8c7-dab8-4efd-a3ac-b07c4c39f60d
+ms.topic: article (how-tos)
 ms.date: January 26, 2016
 ---
 
@@ -21,6 +22,13 @@ To copy a OneNote notebook, section, or page, you send a POST request to the res
 <p id="indent">`POST ../notes/sections/{id}/copyToNotebook`</p>
 
 Send a JSON copy object in the message body. If the request is successful, the OneNote API returns a 202 HTTP status code and an **Operation-Location** header. Then, you can poll the operation endpoint for the result.
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Construct the request URI](#request-uri)</p>
+<p id="indent">[Construct the message body](#message-body)</p>
+<p id="indent">[Example](#example)</p>
+<p id="indent">[Request and response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
 
 >Copy functionality is currently supported for Office 365 personal, site, and unified group notebooks, but not for consumer notebooks on OneDrive.
 

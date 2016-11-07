@@ -1,11 +1,12 @@
 ﻿---
-ms.Toctitle: Authentication and permissions
-title: OneNote authentication and permissions 
-description: Authenticate and register OneNote apps with Microsoft account authentication or Azure Active Directory.
+ms.TocTitle: Authentication and permissions
+Title: OneNote authentication and permissions 
+Description: Authenticate and register OneNote apps with Microsoft account authentication or Azure Active Directory.
 ms.ContentId: 07c9eca4-6c40-4f20-9314-5800d4627b95
+ms.topic: article (how-tos)
 ms.date: November 18, 2015
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -16,11 +17,10 @@ ms.date: November 18, 2015
  
 OneNote uses Microsoft account (formerly Live Connect) and Azure Active Directory to provide secure access to OneNote notebooks. Before you can access notebooks, you first need to authenticate using Microsoft account or Azure AD and get an access token.
 
-Choose your platform:
+**In this article**
 
-- [Authenticate using Microsoft account](#msa-auth) (consumer apps)
-
-- [Authenticate using Azure AD](#aad-auth) (enterprise apps)
+- [Authenticate using Microsoft account (consumer apps)](#msa-auth)  
+- [Authenticate using Azure AD (enterprise apps)](#aad-auth)  
 
 <br />
 Microsoft account is used to access consumer notebooks on OneDrive, and Azure AD is used to access enterprise notebooks on Office 365.
@@ -44,6 +44,7 @@ If you just want to try out the APIs, you can use one of our [interactive consol
  2. [Choose OneNote permissions](#onenote-perms-msa) 
  3. [Sign users in and get an access token](#sign-in-msa) 
  4. [Get a new access token after it expires](#get-new-access-token-msa) 
+
 
 <a name="register-msa"></a>
 ### Register your application and get a client ID and secret (consumer apps)
@@ -112,6 +113,7 @@ Choose the lowest level of permissions that your app needs to do its work. You c
 
 For permissions used to access Office 365 notebooks, see [Choose OneNote permissions (enterprise apps)](#onenote-perms-aad).
 
+
 <a name="sign-in-msa"></a>
 ### Sign users in and get an access token (consumer apps)
 
@@ -127,6 +129,7 @@ Choose your authentication flow. Both are standard OAuth 2.0 flows.
 |------|------|  
 | [Token flow](#token-flow) | <p>Gets an access token in one call. Useful for quick access, but doesn't provide a refresh token for long term access.</p><p>Also called the *Implicit* flow.</p> |  
 | [Code flow](#code-flow) | <p>Gets an authorization code in the first call and exchanges the code for an access token in the second call. When used with the **wl.offline-access** permission scope, your application receives a refresh token that enables long-term access.</p><p>Also called the *Authorization code* flow.</p> |
+
 
 <a name="token-flow"></a>
 **Sign users in with the Token flow**
@@ -159,6 +162,7 @@ https://your-redirect-url
   &scope=office.onenote wl.signin
   &user_id=c519ea026ece84de362cfa77dc0f2348
 ```
+
 
 <a name="code-flow"></a>
 **Sign users in with the Code flow**
@@ -240,6 +244,7 @@ Authorization: Bearer {access-token}
 
 Access tokens are only valid for an hour, so you'll need to get fresh tokens when they expire. You should check the token's expiration before using it, and get a new access token if needed. Users can remain signed in, and they don't have to consent to permissions again unless they sign out or revoke permissions.
 
+
 <a name="get-new-access-token-msa"></a>
 ### Get a new access token after it expires (consumer apps)
 
@@ -308,6 +313,7 @@ This call removes any cookies that enable single sign-on and ensures that the us
 
 After removing cookies, the browser redirects to your redirect URL. The redirect page loads without specifying any authentication query string options, which means the user has been logged out.
 
+
 <a name="revoke-access"></a>
 **Revoking access**
 
@@ -324,6 +330,7 @@ When consent for your app is revoked, any refresh token previously provided to y
 
 You'll need to repeat the auth flow to request a new access and refresh token from the beginning.
 
+
 <a name="aad-auth"></a>
 ## Authenticate using Azure AD (enterprise apps)
 
@@ -331,6 +338,7 @@ You'll need to repeat the auth flow to request a new access and refresh token fr
  2. [Choose OneNote permissions](#onenote-perms-aad) 
  3. [Sign users in and get an access token](#sign-in-aad) 
  4. [Get a new access token after it expires](#get-new-access-token-aad) 
+
 
 <a name="register-aad"></a>
 ### Register your application and get a client ID and secret (enterprise apps)

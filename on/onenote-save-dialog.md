@@ -1,11 +1,12 @@
 ---
-ms.Toctitle: Use the save dialog
-title: Use the OneNote save dialog 
-description: Learn how to use the OneNote save dialog, the quick and easy way to send web content to OneNote.
+ms.TocTitle: Use the save dialog
+Title: Use the OneNote save dialog 
+Description: Learn how to use the OneNote save dialog, the quick and easy way to send web content to OneNote.
 ms.ContentId: 919b5d94-5f13-44a0-8ad0-84595c1beb93
+ms.topic: article (how-tos)
 ms.date: November 18, 2015
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 
 <style>#indent {margin:2px 0px 0px 25px;}</style>

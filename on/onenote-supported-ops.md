@@ -1,8 +1,9 @@
 ---
-ms.Toctitle: Supported operations
-title: Supported REST operations 
-description: Lists all REST operations that are supported by the OneNote API.
+ms.TocTitle: Supported operations
+Title: Supported REST operations 
+Description: Lists all REST operations that are supported by the OneNote API.
 ms.ContentId: 55d9973a-316a-4ccf-8c47-59a36ad7b4f1
+ms.topic: article (how-tos)
 ms.date: April 5, 2015
 ---
 
@@ -17,6 +18,14 @@ ms.date: April 5, 2015
 *__Applies to:__ Consumer notebooks on OneDrive | Enterprise notebooks on Office 365*
 
 This article lists the REST operations you can use with the OneNote API. Click an operation to try it with your own consumer notebooks on OneDrive from our [interactive Apigee console](../howto/onenote-landing.md#console).
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Page operations](#pages)</p>
+<p id="indent">[Section operations](#sections)</p>
+<p id="indent">[Section group operations](#section-groups)</p>
+<p id="indent">[Notebook operations](#notebooks)</p>
+<p id="indent">[Resource operations](#resources)</p>
+
 
 <a name="pages"></a>
 ## Page operations

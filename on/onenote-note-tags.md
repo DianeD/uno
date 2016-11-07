@@ -1,8 +1,9 @@
 ---
-ms.Toctitle: Use note tags
-title: Use note tags
-description: Add, update, and retrieve OneNote note tags.
+ms.TocTitle: Use note tags
+Title: Use note tags
+Description: Add, update, and retrieve OneNote note tags.
 ms.ContentId: 8521e2bf-eca6-4e9b-8377-6babb2846f7c
+ms.topic: article (how-tos)
 ms.date: January 19, 2016
 ---
 
@@ -17,6 +18,15 @@ Use the `data-tag` attribute to add and update check boxes, stars, and other bui
 <br />
 
 ![Three note tags displayed on a OneNote page.](images\onenote\note-tags-example.png)
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Note tag attributes](#attributes)</p>
+<p id="indent">[Add or update note tags](#add-update)</p>
+<p id="indent">[Retrieve note tags](#get)</p>
+<p id="indent">[Built-in note tags for OneNote](#built-in-tags)</p>
+<p id="indent">[Response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
+
 
 <a name="attributes"></a>
 ## Note tag attributes

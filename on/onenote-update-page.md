@@ -1,11 +1,12 @@
 ﻿---
-ms.Toctitle: Update page content
-title: Update OneNote page content
-description: Update the HTML content of OneNote pages.
+ms.TocTitle: Update page content
+Title: Update OneNote page content
+Description: Update the HTML content of OneNote pages.
 ms.ContentId: f597bd73-866e-48a3-95c1-91b9bfabffa2
+ms.topic: article (how-tos)
 ms.date: November 18, 2015
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -20,6 +21,16 @@ To update the content of a OneNote page, you send a PATCH request to the page's 
 <p id="indent">`PATCH ../notes/pages/{id}/content`</p>
 
 Send a JSON change object in the message body. If the request is successful, the OneNote API returns a 204 HTTP status code.
+
+
+<p  id="top-padding">**In this article**</p>
+<p id="indent">[Construct the request URI](#request-uri)</p>
+<p id="indent">[Construct the message body](#message-body)</p>
+<p id="indent">[Supported elements and actions](#support-matrix)</p>
+<p id="indent">[Example requests](#examples)</p>
+<p id="indent">[Request and response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
+
 
 <a name="request-uri"></a>
 ## Construct the request URI

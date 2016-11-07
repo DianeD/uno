@@ -1,8 +1,9 @@
 ---
-ms.Toctitle: Extract data
-title: Extract data from captures 
-description: Use the OneNote API to augment and transform content for a business card, online recipe, or online product listing.
+ms.TocTitle: Extract data
+Title: Extract data from captures 
+Description: Use the OneNote API to augment and transform content for a business card, online recipe, or online product listing.
 ms.ContentId: 901068e3-1d4d-4233-856b-5a2a71cc58c2
+ms.topic: article (how-tos)
 ms.date: January 19, 2016
 ---
 
@@ -16,6 +17,15 @@ ms.date: January 19, 2016
 *__Applies to:__ Consumer notebooks on OneDrive | Enterprise notebooks on Office 365*
 
 Use the OneNote API to extract business card data from an image, or recipe and product data from a URL.
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Extraction attributes](#attributes)</p>
+<p id="indent">[Business card extractions](#biz-card)</p>
+<p id="indent">[Recipe extractions](#recipe)</p>
+<p id="indent">[Product listing extractions](#product)</p>
+<p id="indent">[Unknown content type extractions](#unknown)</p>
+<p id="indent">[Response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
 
 <a name="attributes"></a>
 ## Extraction attributes

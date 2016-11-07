@@ -1,11 +1,12 @@
 ﻿---
-ms.Toctitle: Open the OneNote clients
-title: Open the OneNote clients 
-description: Use the **links** property to open OneNote pages and notebooks in OneNote Online or the native client.
+ms.TocTitle: Open the OneNote clients
+Title: Open the OneNote clients 
+Description: Use the **links** property to open OneNote pages and notebooks in OneNote Online or the native client.
 ms.ContentId: 445543de-14db-4a53-bf2c-356d233e71fd
+ms.topic: article (how-tos)
 ms.date: November 18, 2015
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -48,7 +49,7 @@ The OneNote API returns the **links** property in the HTTP response for the foll
 
 The following examples show how to check the status code of the response, parse the JSON to extract the URLs, and then open the client.
 
-## iOS example
+**iOS example**
 
 The following example gets the OneNote client URLs from the JSON response. It uses the AFNetworking library (http://afnetworking.com/) to extract the two URLs. In the example, **created** is a pointer to the ONSCPSStandardResponse object used to store the response values, and **responseObject** holds the parsed JSON.
 
@@ -97,7 +98,7 @@ NSURL *url = [NSURL URLWithString:standardResponse.oneNoteWebUrl];
 [[UIApplication sharedApplication] openURL:url];
 ```
 
-## Android example
+**Android example**
 
 First, check for the success status code and then parse the JSON. The example assumes a POST request was sent, so it checks for a 201 status code. If you made a GET request, check for a 200 status code instead.
 

@@ -23,6 +23,13 @@ You can use the *permissions* endpoint to manage read or write permissions to no
 <p id="indent1">`GET ../permissions/{permission-id}`</p>
 <p id="indent1">`DELETE ../permissions/{permission-id}`</p>
 
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Construct the request URI](#request-uri)</p>
+<p id="indent">[Create or update permissions](#create-or-update)</p>
+<p id="indent">[Get permissions](#get)</p>
+<p id="indent">[Delete permissions](#delete)</p>
+<p id="indent">[Permissions, inheritance, and precedence](#permission-inheritance-and-precedence)</p>
+
 >Managing permissions is supported for Office 365 personal, site, and unified group notebooks, but not for consumer notebooks on OneDrive.
 
 <a name="request-uri"></a>

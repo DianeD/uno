@@ -1,8 +1,9 @@
 ﻿---
-ms.Toctitle: Subscribe for webhooks
-title: Subscribe for webhooks to get change notifications
-description: Keep up-to-date with changes that your users make in OneNote by subscribing for webhooks.
+ms.TocTitle: Subscribe for webhooks
+Title: Subscribe for webhooks to get change notifications
+Description: Keep up-to-date with changes that your users make in OneNote by subscribing for webhooks.
 ms.ContentId: 0793a8f9-4805-4666-9d45-3b79c278d765
+ms.topic: article (how-tos)
 ms.date: February 2, 2016
 ---
 

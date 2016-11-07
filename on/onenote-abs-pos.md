@@ -1,8 +1,9 @@
 ---
-ms.Toctitle: Create absolute positioned elements
-title: Create absolute positioned elements 
-description: Create OneNote pages that contain div, img, and object elements that can be positioned independently.
+ms.TocTitle: Create absolute positioned elements
+Title: Create absolute positioned elements 
+Description: Create OneNote pages that contain div, img, and object elements that can be positioned independently.
 ms.ContentId: 34933340-b850-49ac-a25a-8cfa12cd14ff
+ms.topic: article (how-tos)
 ms.date: November 30, 2015
 ---
 
@@ -14,6 +15,11 @@ ms.date: November 30, 2015
 *__Applies to:__ Consumer notebooks on OneDrive | Enterprise notebooks on Office 365*
 
 The body of a OneNote page can contain multiple direct `div`, `img`, and `object` child elements that can be positioned independently on the page.
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Attributes and positioning behavior](#attributes)</p>
+<p id="indent">[Response information](#request-response-info)</p>
+<p id="indent">[Permissions](#permissions)</p>
 
 <a name="attributes"></a>
 ## Attributes and positioning behavior

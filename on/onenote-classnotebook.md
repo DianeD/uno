@@ -1,8 +1,9 @@
 ﻿---
-ms.Toctitle: Work with class notebooks
-title: Work with class notebooks
-description: Learn how to create and manage class notebooks.
+ms.TocTitle: Work with class notebooks
+Title: Work with class notebooks
+Description: Learn how to create and manage class notebooks.
 ms.ContentId: b3eca630-4f08-4157-b01b-c38df7782648
+ms.topic: article (how-tos)
 ms.date: May 24, 2016
 ---
 
@@ -17,6 +18,16 @@ ms.date: May 24, 2016
 Schools, colleges, and universities worldwide use [class notebooks](https://www.onenote.com/classnotebook) to help promote productivity, engagement, and collaboration. You can use class notebooks for every class, project, term, and assignment.
 
 You can use the *classNotebooks* endpoint to perform common tasks for class notebooks, such as creating class notebooks and adding or removing students.
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Construct the request URI](#request-uri)</p>
+<p id="indent">[Create class notebooks](#create)</p>
+<p id="indent">[Update class notebooks](#update)</p>
+<p id="indent">[Get class notebooks](#get)</p>
+<p id="indent">[Delete class notebooks](#delete)</p>
+<p id="indent">[Add students and teachers](#add-people)</p>
+<p id="indent">[Remove students and teachers](#remove-people)</p>
+<p id="indent">[Insert sections](#insert-sections)</p>
 
 >The OneNote API provides the *classNotebooks* endpoint for operations that are specific to class notebooks.
 

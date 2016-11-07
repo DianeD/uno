@@ -1,11 +1,12 @@
 ﻿---
-ms.Toctitle: OneNote development
-title: OneNote 
-description: Use the OneNote API to integrate with consumer and enterprise notebooks.
+ms.TocTitle: OneNote development
+Title: OneNote 
+Description: Use the OneNote API to integrate with consumer and enterprise notebooks.
 ms.ContentId: 085adac0-87ce-4c70-8d41-b7a53f3576a8
+ms.topic: article (how-tos)
 ms.date: July 26, 2016
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -20,6 +21,14 @@ OneNote is a popular note-taking tool that's available online and on many mobile
 ![A sample OneNote page.](images\onenote\onenote-page.png)
 
 Leverage OneNote's notebook, section, and page hierarchy and easy-to-use API to help your users plan and organize ideas and information.
+
+<p id="top-padding">**In this article**</p>
+<p id="indent">[Platform overview](#overview)</p>
+<p id="indent">[Why create OneNote apps?](#why-onenote)</p>
+<p id="indent">[Get started with the OneNote API](#get-started)</p>
+<p id="indent">[Connect with us](#contact)</p>
+<p id="indent">[What's changed](#changes)</p>
+
 
 <a name="overview"></a> 
 ## Platform overview
@@ -95,6 +104,7 @@ Content-Type:application/json; odata.metadata=minimal; odata.streaming=true
 ```
 See [Create pages](..\howto\onenote-create-page.md) for a closer look at *POST pages* requests. 
 
+
 <a name="why-onenote"></a>
 ## Why create OneNote apps?
 Integrate OneNote to create apps that people will love. You can use the OneNote API to create and manage notes, lists, pictures, files, and more in OneNote notebooks.
@@ -114,6 +124,7 @@ Integrate OneNote to create apps that people will love. You can use the OneNote 
  Use OneNote to increase your app usage. Pre-installed on new Windows devices, available for popular platforms, on the web as OneNote Online, and part of [Office 365](../howto/platform-development-overview.md)--100+ million people worldwide actively use OneNote. When you publish apps that leverage the 
   feature-rich OneNote environment, the cross-platform market potential is simply too big to ignore.
 
+ 
 <a name="get-started"></a>
 ## Get started with the OneNote API
 Use samples and tutorials to start coding fast, try out our interactive consoles, or dive deeper with our documentation.
@@ -186,10 +197,12 @@ When you're ready to dig deeper, browse our how-to and conceptual articles to le
 <p id="indent">[Use the save dialog](../howto/onenote-save-dialog.md)</p>
 <p id="indent">[Subscribe for webhooks](../howto/onenote-sync.md)</p>
 
+
 <a name="sdks"></a>
 ### SDKs for OneNote development
 
 [!INCLUDE [sdks](../includes/onenote/sdks.md)]
+
 
 <a name="contact"></a>
 ## Connect with us
@@ -200,12 +213,14 @@ Stay tuned as we expand and improve. We always want to hear your questions and c
 - Follow us on Twitter: [@onenotedev](http://twitter.com/onenotedev). 
 - Send us your ideas and comments on [UserVoice](http://go.microsoft.com/fwlink/?LinkID=396377).
 
+
 <a name="changes"></a>
 ## What's changed
 
 The following entries highlight changes made to the OneNote API and documentation during the past year:
 
 <p id="outdent">July 2016</p>
+
 <p id="indent">Added the [Work with staff notebooks](../howto/onenote-staffnotebook.md) topic.</p>
 <p id="indent">Documented support for [embedded videos](../howto/onenote-images-files.md#videos).</p>
 <p id="outdent">May 2016</p>
@@ -239,6 +254,7 @@ The following entries highlight changes made to the OneNote API and documentatio
 <p id="outdent">June 2015</p>
 <p id="indent">Published the [Use note tags](../howto/onenote-note-tags.md) topic.</p>
 
+<a name="see-also"></a>
 ## Additional resources
 
 - [OneNote Dev Center](http://dev.onenote.com/) 

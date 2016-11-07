@@ -1,11 +1,12 @@
 ---
-ms.Toctitle: Branding guidelines
-title: Branding guidelines for OneNote API developers 
-description: Authenticate OneNote apps with Live Connect or Azure Active Directory.
+ms.TocTitle: Branding guidelines
+Title: Branding guidelines for OneNote API developers 
+Description: Authenticate OneNote apps with Live Connect or Azure Active Directory.
 ms.ContentId: 25ba5b99-89a8-4563-b33c-288eb55d3ec1
+ms.topic: article (how-tos)
 ms.date: November 18, 2015
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -14,6 +15,18 @@ ms.date: November 18, 2015
 *__Applies to:__ Consumer notebooks on OneDrive | Enterprise notebooks on Office 365*
 
 Follow the guidance in this article to best integrate the OneNote brand within your product and satisfy OneNote branding requirements.
+
+<p id="tb-padding">**In this article**</p>
+
+<p id="indent">[Downloadable logos](#download-logos)</p>
+<p id="indent">[Logo variations](#variations)</p>
+<p id="indent">[Clear space](#spacing)</p>
+<p id="indent">[Minimum size](#size)</p>
+<p id="indent">[Color](#color)</p>
+<p id="indent">[Logo don'ts](#do-nots)</p>
+<p id="indent">[Referencing the OneNote name](#name)</p>
+<p id="indent">[Examples](#examples)</p>
+
 
 <a name="download-logos"></a>
 ## Downloadable logos

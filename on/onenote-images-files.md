@@ -4,8 +4,8 @@ title: Add images, videos, and files to OneNote pages
 description: Learn how to add images, webpage snapshots, embedded videos, and file attachments to OneNote pages.
 ms.ContentId: cdee3bca-0da3-4225-9e31-7e0fb519a607
 ms.date: July 5, 2016
-
 ---
+
 [!INCLUDE [Add the O365API repo styles](../includes/controls/addo365apistyles.xml)]
 [!INCLUDE [Add the ONAPI repo styles](../includes/controls/addonapistyles.xml)]
 
@@ -457,5 +457,3 @@ For more information about permission scopes and how they work, see [OneNote per
 - [OneNote development questions on Stack Overflow](http://go.microsoft.com/fwlink/?LinkID=390182) 
 - [OneNote GitHub repos](http://go.microsoft.com/fwlink/?LinkID=390178)  
 
-
-[!INCLUDE [Enable filtering functionality ](../includes/controls/enablefiltering.xml)]
