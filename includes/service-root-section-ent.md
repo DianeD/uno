@@ -42,9 +42,9 @@ Example response:
 
 ```
 {
-  "@odata.context":"https://www.onenote.com/api/v1.0/$metadata#Microsoft.OneNote.Api.SiteMetadata",
-  "siteCollectionId":"09d1a587-a84b-4264-3d15-669429be8cc5",
-  "siteId":"d9e4d5c8-683f-4363-89ae-18c4e3da91e9"
+&nbsp; "@odata.context":"https://www.onenote.com/api/v1.0/$metadata#Microsoft.OneNote.Api.SiteMetadata",
+&nbsp; "siteCollectionId":"09d1a587-a84b-4264-3d15-669429be8cc5",
+&nbsp; "siteId":"d9e4d5c8-683f-4363-89ae-18c4e3da91e9"
 }
 ```
 
