@@ -1,0 +1,21 @@
+{
+  "name": "react-fabric-graph",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "0.7.0"
+  },
+  "dependencies": {
+    "hellojs": "^1.14.0",
+    "msgraph-sdk-javascript": "^0.1.2",
+    "office-ui-fabric-react": "^0.63.4",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
