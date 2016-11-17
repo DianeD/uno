@@ -11,6 +11,7 @@
     "office-ui-fabric-react": "^0.63.4",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+	"react-scripts": "0.7.0",
     "webpack": "^1.13.3"
   },
   "scripts": {
