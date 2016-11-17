@@ -22,10 +22,11 @@ export default class PeoplePickerExample extends Component {
 
     // Helper that uses the JavaScript SDK to communicate with Microsoft Graph.
     this.sdkHelper = window.sdkHelper;
+
+    this._showError = this._showError.bind(this);
     this.state = {
       selectedPeople: []
     };
-    this._showError = this._showError.bind(this);
   }
 
   // Get the list of people to use as the picker data source.
@@ -47,6 +48,10 @@ export default class PeoplePickerExample extends Component {
         });
 
         this.sdkHelper.getProfilePics(personas, (err, personasWithPics) => {
+          
+          //temp while getting pics is flaky--add at least one person
+          personasWithPics.push(this._tempSeed());
+
           this.state = {
             peopleList: personasWithPics
           }
@@ -112,6 +117,17 @@ export default class PeoplePickerExample extends Component {
 
   //onGetMoreResults to page users?
   //onGetMoreResults?: (filter: string, selectedItems?: T[]) => T[] | PromiseLike<T[]>;
+  _tempSeed() {
+    let persona = new Persona();
+
+      persona.primaryText = 'Alice Wonderland';
+      persona.secondaryText = 'aw@contoso.com';
+      persona.presence = 0;//PersonaPresence.none; resets to 2 at some point// presence isn't supported in Microsoft Graph yet
+      persona.imageInitials = 'AW';
+      persona.initialsColor = Math.floor(Math.random() * 15) + 0;
+
+    return persona;
+  }
 
   // Renders the people picker using the NormalPeoplePicker template.
   render() {

@@ -52,7 +52,7 @@ export default class App extends Component {
     hello.init( {
       aad: 'f72833a0-1e92-46dc-9232-e2c50361dae5'
       }, {
-      redirect_uri: 'http://localhost:3000/',
+      redirect_uri: 'http://graph-fabric-react.azurewebsites.net/',
       scope: 'user.readbasic.all mail.send files.read'
     });
 
