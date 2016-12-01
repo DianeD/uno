@@ -11,6 +11,7 @@ export default class GraphSdkHelper {
 
     // Initialize the Graph SDK.
     this.client = Graph.init({
+      headers: { 'SampleID': 'someHeaderValue' },
       debugLogging: true,
       authProvider: (done) => {
         done(null, window.hello('aad').getAuthResponse().access_token);
@@ -51,23 +52,25 @@ export default class GraphSdkHelper {
       const pic = (p, done) => {
         this.client 
           .api(`users/${p.props.id}/photo/$value`)
-          //.header('responseType', "arraybuffer")
-          .get((err, res, rawResponse) => { //todo: OK that res is null?
+          .responseType('blob')
+          .get((err, res, rawResponse) => {
             if (err) {
-              done(err)
+
+              // Handle case where the person doesn't have profile pic.
+              if (err.statusCode === 404) {            
+                personasWithPics.push(p);
+              }
+              done(err);
             } 
             else {
-              const encoder = new TextEncoder();
-              const u8 = encoder.encode(rawResponse.text); //converts a DOMstring to Uint8Array
-              const b64encoded = btoa(String.fromCharCode.apply(null, u8));
-
-              p.imageUrl = `data:image/jpeg;base64,${b64encoded}`;
+              p.imageUrl = window.URL.createObjectURL(rawResponse.xhr.response);
+              p.initialsColor = null;
               personasWithPics.push(p);
-              done();      
+              done();
             }
           });
       };
-      async.eachSeries(personas, pic, (err) => {
+      async.each(personas, pic, (err) => {
         callback(err, personasWithPics);
       });
     }
@@ -95,17 +98,30 @@ export default class GraphSdkHelper {
     }
 
     // GET drive/root/children
-    this.getFiles = (callback) => {
-      this.client
-        .api('/me/drive/root/children')
-        //.filter(`file ne null`) /////////////would prefer this
-        .select('name,createdBy,createdDateTime,lastModifiedBy,lastModifiedDateTime,webUrl,file')
-        .get((err, res) => {
-          if (err) {
-            this._handleError(err);
-          }
-          callback(err, (res) ? res.value: null);
-        });
+    this.getFiles = (nextLink, callback) => {
+      if (nextLink) {
+        this.client
+          .api(nextLink)
+          .get((err, res) => {
+            if (err) {
+              this._handleError(err);
+            }
+            callback(err, res);
+          });
+      }
+      else {
+        this.client
+          .api('/me/drive/root/children') 
+          //.filter(`file ne null`) /////////////would prefer this
+          .select('name,createdBy,createdDateTime,lastModifiedBy,lastModifiedDateTime,webUrl,file')
+          .top(5) // default page size is 200
+          .get((err, res) => {
+            if (err) {
+              this._handleError(err);
+            }
+            callback(err, res);
+          });
+      }
     }
 
     this._handleError = this._handleError.bind(this);

@@ -40,7 +40,7 @@ export default class App extends Component {
 
     // Set the isAuthenticated prop: true if there's an aad object in localStorage.hello. 
     this.state = {
-      isAuthenticated: (!!hello('aad').getAuthResponse()),
+      isAuthenticated: !!hello('aad').getAuthResponse(),
       example: ''
     };
   }
@@ -50,9 +50,9 @@ export default class App extends Component {
 
     // Initialize the auth request.
     hello.init( {
-      aad: 'f72833a0-1e92-46dc-9232-e2c50361dae5'
+      aad: 'f72833a0-1e92-46dc-9232-e2c50361dae5' // Azure application ID
       }, {
-      redirect_uri: 'http://graph-fabric-react.azurewebsites.net/',
+      redirect_uri: 'http://localhost:3000/',
       scope: 'user.readbasic.all mail.send files.read'
     });
 
@@ -83,14 +83,13 @@ export default class App extends Component {
               {
                 key: 'component-example-menu',
                 name: 'Choose component',
-                isDisabled: (!this.state.isAuthenticated),
+                disabled: !this.state.isAuthenticated,
                 ariaLabel: 'Choose a component example to render in the page',
-                onClick: () => { return; },
                 items: [
                   {
-                    key: 'picker-example',
+                    key: 'people-picker-example',
                     name: 'People Picker',
-                    onClick: () => { this.setState({ example: 'picker-example' }) }
+                    onClick: () => { this.setState({ example: 'people-picker-example' }) }
                   },
                   {
                     key: 'details-list-example',
@@ -103,8 +102,8 @@ export default class App extends Component {
             farItems={[
               {
                 key: 'log-in-out=button',
-                name: (this.state.isAuthenticated) ? 'Sign out' : 'Sign in',
-                onClick: (this.state.isAuthenticated) ? this.logout.bind(this) : this.login.bind(this)
+                name: this.state.isAuthenticated ? 'Sign out' : 'Sign in',
+                onClick: this.state.isAuthenticated ? this.logout.bind(this) : this.login.bind(this)
               }
             ]} />
         }
@@ -128,7 +127,7 @@ export default class App extends Component {
             this.state.isAuthenticated &&
               <div>
               {
-                this.state.example === 'picker-example' &&
+                this.state.example === 'people-picker-example' &&
                 <PeoplePickerExample />
               }
               {

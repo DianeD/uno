@@ -22,11 +22,10 @@ export default class PeoplePickerExample extends Component {
 
     // Helper that uses the JavaScript SDK to communicate with Microsoft Graph.
     this.sdkHelper = window.sdkHelper;
-
-    this._showError = this._showError.bind(this);
     this.state = {
       selectedPeople: []
     };
+    this._showError = this._showError.bind(this);
   }
 
   // Get the list of people to use as the picker data source.
@@ -38,7 +37,7 @@ export default class PeoplePickerExample extends Component {
 
           persona.primaryText = p.displayName;
           persona.secondaryText = p.emailAddresses[0].address || p.userPrincipalName;
-          persona.presence = 0;//PersonaPresence.none; resets to 2 at some point// presence isn't supported in Microsoft Graph yet
+          persona.presence = PersonaPresence.none; // Presence isn't supported in Microsoft Graph yet
           persona.imageInitials = (!!p.givenName && !!p.surname) ? 
             p.givenName.substring(0,1) + p.surname.substring(0,1) : null;
           persona.initialsColor = Math.floor(Math.random() * 15) + 0;
@@ -48,14 +47,10 @@ export default class PeoplePickerExample extends Component {
         });
 
         this.sdkHelper.getProfilePics(personas, (err, personasWithPics) => {
-          
-          //temp while getting pics is flaky--add at least one person
-          personasWithPics.push(this._tempSeed());
-
-          this.state = {
-            peopleList: personasWithPics
-          }
-        });
+        this.state = {
+          peopleList: personasWithPics
+        }
+      });
     }
     else this._showError(err);
   });
@@ -64,7 +59,7 @@ export default class PeoplePickerExample extends Component {
   // Handler for when text is entered into the picker control.
   _onFilterChanged(filterText, items) {
     return filterText ? this.state.peopleList
-      .filter(item => item.primaryText.toLowerCase().indexOf(filterText.toLowerCase() ) === 0)
+      .filter(item => item.primaryText.toLowerCase().indexOf(filterText.toLowerCase()) === 0)
       .filter(item => !this._listContainsPersona(item, items)) : [];
   }
   _listContainsPersona(persona, items) {
@@ -76,7 +71,6 @@ export default class PeoplePickerExample extends Component {
   
   // Handler for when the selection changes in the picker control.
   _onSelectionChanged(items) { 
-    // bug? often get this warning: Each child in an array or iterator should have a unique "key" prop.
     this.setState({
       mailResult: null,
       selectedPeople: items
@@ -117,17 +111,6 @@ export default class PeoplePickerExample extends Component {
 
   //onGetMoreResults to page users?
   //onGetMoreResults?: (filter: string, selectedItems?: T[]) => T[] | PromiseLike<T[]>;
-  _tempSeed() {
-    let persona = new Persona();
-
-      persona.primaryText = 'Alice Wonderland';
-      persona.secondaryText = 'aw@contoso.com';
-      persona.presence = 0;//PersonaPresence.none; resets to 2 at some point// presence isn't supported in Microsoft Graph yet
-      persona.imageInitials = 'AW';
-      persona.initialsColor = Math.floor(Math.random() * 15) + 0;
-
-    return persona;
-  }
 
   // Renders the people picker using the NormalPeoplePicker template.
   render() {
